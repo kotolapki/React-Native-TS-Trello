@@ -17,15 +17,7 @@ import {
   selectSettingsCategory,
   selectCurrentCommentId,
 } from '../../redux/selectors';
-import {
-  deleteDeskRequest,
-  updateDeskTitleRequest,
-  updateTaskTitleRequest,
-  deleteTaskRequest,
-  updateTaskDescRequest,
-  updateCommentRequest,
-  deleteCommentRequest,
-} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 import {navigate} from '../../services/NavigationService';
 import SettingsInputBtn from '../SettingsInputBtn';
 
@@ -56,23 +48,28 @@ function Settings() {
 
   function updateNameHandler() {
     if (settingsCategory === 'desk') {
-      dispatch(updateDeskTitleRequest(currentDeskId, inputValue));
+      dispatch(actions.updateDeskTitle({id: currentDeskId, title: inputValue}));
     }
 
     if (settingsCategory === 'task') {
-      dispatch(updateTaskTitleRequest(currentTaskId, inputValue));
+      dispatch(actions.updateTaskTitle({id: currentTaskId, title: inputValue}));
     }
 
     if (settingsCategory === 'comment') {
-      dispatch(updateCommentRequest(currentCommentId, inputValue));
+      dispatch(actions.updateComment({id: currentCommentId, text: inputValue}));
       navigate('TaskScreen');
     }
 
     setInputValue('');
   }
 
-  function updateDescHandler() {
-    dispatch(updateTaskDescRequest(currentTaskId, inputValue));
+  function updateDescriptionHandler() {
+    dispatch(
+      actions.updateTaskDescription({
+        id: currentTaskId,
+        description: inputValue,
+      }),
+    );
     setInputValue('');
     navigate('TaskScreen');
   }
@@ -81,16 +78,16 @@ function Settings() {
     e.stopPropagation();
 
     if (settingsCategory === 'desk') {
-      dispatch(deleteDeskRequest(currentDeskId));
+      dispatch(actions.deleteDesk({id: currentDeskId}));
     }
 
     if (settingsCategory === 'task') {
-      dispatch(deleteTaskRequest(currentTaskId));
+      dispatch(actions.deleteTask({id: currentTaskId}));
       navigate('Desk');
     }
 
     if (settingsCategory === 'comment') {
-      dispatch(deleteCommentRequest(currentCommentId));
+      dispatch(actions.deleteComment({id: currentCommentId}));
       navigate('TaskScreen');
     }
   }
@@ -124,7 +121,7 @@ function Settings() {
             initialValue={inputValue}
             placeholder={'Enter new description...'}
             onChangeHandler={setInputValue}
-            onPressHandler={updateDescHandler}
+            onPressHandler={updateDescriptionHandler}
             btnText={'Update description'}
             name={'descriptionField'}
             isActive={activeInput === 'descriptionField'}

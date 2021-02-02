@@ -6,11 +6,7 @@ function getAuthorizationHeader(token: string) {
   };
 }
 
-export async function addNewUser(
-  email: string,
-  name: string,
-  password: string,
-) {
+export async function signUp(email: string, name: string, password: string) {
   const user = {
     email,
     name,
@@ -158,7 +154,7 @@ export async function fetchComments(token: string) {
     .then((response) => response);
 }
 
-export async function AddComment(token: string, text: string, id: number) {
+export async function addComment(token: string, text: string, id: number) {
   return axios
     .post(
       `https://trello-purrweb.herokuapp.com/cards/${id}/comments`,
@@ -184,5 +180,5 @@ export async function deleteComment(token: string, id: number) {
       `https://trello-purrweb.herokuapp.com/comments/${id}`,
       getAuthorizationHeader(token),
     )
-    .then();
+    .then((response) => response);
 }

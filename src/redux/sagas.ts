@@ -1,150 +1,85 @@
-import {
-  SIGN_IN,
-  SIGN_UP,
-  ADD_NEW_DESK,
-  FETCH_DESKS_REQUEST,
-  FETCH_TASKS_REQUEST,
-  ADD_NEW_TASK_REQUEST,
-  UPDATE_TASK_CHECKED_REQUEST,
-  DELETE_TASK_REQUEST,
-  UPDATE_DESK_TITLE_REQUEST,
-  DELETE_DESK_REQUEST,
-  UPDATE_TASK_TITLE_REQUEST,
-  UPDATE_TASK_DESC_REQUEST,
-  FETCH_COMMENTS_REQUEST,
-  ADD_COMMENT_REQUEST,
-  UPDATE_COMMENT_REQUEST,
-  DELETE_COMMENT_REQUEST,
-} from './types';
+import {Task} from './../../types';
 import {takeEvery, put, call, select} from 'redux-saga/effects';
-import {
-  signUpRequest,
-  signUpSuccess,
-  signUpFailure,
-  signInRequest,
-  signInSuccess,
-  signInFailure,
-  addNewDeskRequest,
-  addNewDeskFailure,
-  addNewDeskSuccess,
-  fetchDesksFailure,
-  fetchDesksSuccess,
-  fetchTasksSuccess,
-  fetchTasksFailure,
-  addNewTaskFailure,
-  addNewTaskSuccess,
-  updateTaskCheckedFailure,
-  updateTaskCheckedSuccess,
-  updateTaskTitleSuccess,
-  updateTaskTitleFailure,
-  updateTaskDescSuccess,
-  updateTaskDescFailure,
-  deleteTaskFailure,
-  deleteTaskSuccess,
-  updateDeskTitleFailure,
-  updateDeskTitleSuccess,
-  deleteDeskFailure,
-  deleteDeskSuccess,
-  fetchCommentsFailure,
-  fetchCommentsSuccess,
-  addCommentFailure,
-  addCommentSuccess,
-  updateCommentFailure,
-  updateCommentSuccess,
-  deleteCommentFailure,
-  deleteCommentSuccess,
-} from './actions';
+import {actions} from './rootReducer';
 import {navigate} from '../services/NavigationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {selectToken, selectUser} from './selectors';
-import {
-  addNewUser,
-  signIn,
-  addNewDesk,
-  fetchDesks,
-  fetchTasks,
-  addNewTask,
-  updateTask,
-  deleteTask,
-  updateDeskTitle,
-  deleteDesk,
-  fetchComments,
-  AddComment,
-  updateComment,
-  deleteComment,
-} from '../api/api';
+import * as api from '../api/api';
 
 export function* sagaWatcher() {
-  yield takeEvery(SIGN_UP, signUpFlow);
-  yield takeEvery(SIGN_IN, signInFlow);
-  yield takeEvery(ADD_NEW_DESK, addNewDeskFlow);
-  yield takeEvery(FETCH_DESKS_REQUEST, fetchDesksFlow);
-  yield takeEvery(FETCH_TASKS_REQUEST, fetchTasksFlow);
-  yield takeEvery(ADD_NEW_TASK_REQUEST, addNewTaskFlow);
-  yield takeEvery(UPDATE_TASK_CHECKED_REQUEST, updateTaskCheckedFlow);
-  yield takeEvery(DELETE_TASK_REQUEST, deleteTaskFlow);
-  yield takeEvery(UPDATE_DESK_TITLE_REQUEST, updateDeskTitleFlow);
-  yield takeEvery(DELETE_DESK_REQUEST, deleteDeskFlow);
-  yield takeEvery(UPDATE_TASK_TITLE_REQUEST, updateTaskTitleFlow);
-  yield takeEvery(UPDATE_TASK_DESC_REQUEST, updateTaskDescFlow);
-  yield takeEvery(FETCH_COMMENTS_REQUEST, fetchCommentsFlow);
-  yield takeEvery(ADD_COMMENT_REQUEST, addCommentFlow);
-  yield takeEvery(UPDATE_COMMENT_REQUEST, updateCommentFlow);
-  yield takeEvery(DELETE_COMMENT_REQUEST, deleteCommentFlow);
+  yield takeEvery(actions.signUp.type, signUpFlow);
+  yield takeEvery(actions.signIn.type, signInFlow);
+  yield takeEvery(actions.addNewDesk.type, addNewDeskFlow);
+  yield takeEvery(actions.fetchDesks.type, fetchDesksFlow);
+  yield takeEvery(actions.fetchTasks.type, fetchTasksFlow);
+  yield takeEvery(actions.addNewTask.type, addNewTaskFlow);
+  yield takeEvery(actions.updateTaskChecked.type, updateTaskCheckedFlow);
+  yield takeEvery(actions.deleteTask.type, deleteTaskFlow);
+  yield takeEvery(actions.updateDeskTitle.type, updateDeskTitleFlow);
+  yield takeEvery(actions.deleteDesk.type, deleteDeskFlow);
+  yield takeEvery(actions.updateTaskTitle.type, updateTaskTitleFlow);
+  yield takeEvery(
+    actions.updateTaskDescription.type,
+    updateTaskDescriptionFlow,
+  );
+  yield takeEvery(actions.fetchComments.type, fetchCommentsFlow);
+  yield takeEvery(actions.addComment.type, addCommentFlow);
+  yield takeEvery(actions.updateComment.type, updateCommentFlow);
+  yield takeEvery(actions.deleteComment.type, deleteCommentFlow);
 }
 
-function* signUpFlow(action: any) {
-  yield put(signUpRequest());
-
+function* signUpFlow(action: ReturnType<typeof actions.signUp>) {
   try {
     const response = yield call(
-      addNewUser,
+      api.signUp,
       action.payload.email,
-      action.payload.name,
+      action.payload.username,
       action.payload.password,
     );
 
-    yield put(signUpSuccess(response.data.name, response.data.token));
+    const {name, token} = response.data;
 
-    yield call(AsyncStorage.setItem, 'token', response.data.token);
-    yield call(AsyncStorage.setItem, 'name', response.data.name);
+    yield put(actions.signUpSuccess({name, token}));
+
+    yield call(AsyncStorage.setItem, 'token', token);
+    yield call(AsyncStorage.setItem, 'name', name);
 
     navigate('Main');
   } catch (error) {
-    yield put(signUpFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* signInFlow(action: any) {
-  yield put(signInRequest());
-
+function* signInFlow(action: ReturnType<typeof actions.signIn>) {
   try {
     const response = yield call(
-      signIn,
+      api.signIn,
       action.payload.email,
       action.payload.password,
     );
 
-    yield put(signInSuccess(response.data.name, response.data.token));
-    yield call(AsyncStorage.setItem, 'token', response.data.token);
-    yield call(AsyncStorage.setItem, 'name', response.data.name);
+    const {name, token} = response.data;
+
+    yield put(actions.signInSuccess({name, token}));
+    yield call(AsyncStorage.setItem, 'token', token);
+    yield call(AsyncStorage.setItem, 'name', name);
     yield call(navigate, 'Main');
   } catch (error) {
-    yield put(signInFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* addNewDeskFlow(action: any) {
-  yield put(addNewDeskRequest());
+function* addNewDeskFlow(action: ReturnType<typeof actions.addNewDesk>) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(addNewDesk, action.payload.title, token);
-    yield put(addNewDeskSuccess(response.data.title, response.data.id));
+    const response = yield call(api.addNewDesk, action.payload.title, token);
+    const {title, id} = response.data;
+    yield put(actions.addNewDeskSuccess({title, id}));
   } catch (error) {
-    yield put(addNewDeskFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
@@ -153,138 +88,156 @@ function* fetchDesksFlow() {
   const token = yield select(selectToken);
 
   try {
-    const desks = yield call(fetchDesks, token);
-    yield put(fetchDesksSuccess(desks));
+    const desks = yield call(api.fetchDesks, token);
+    yield put(actions.fetchDesksSuccess({desks}));
   } catch (error) {
-    yield put(fetchDesksFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* fetchTasksFlow(action: any) {
+function* fetchTasksFlow(action: ReturnType<typeof actions.fetchTasks>) {
   const token = yield select(selectToken);
 
   try {
-    const tasks = yield call(fetchTasks, token);
-    yield put(fetchTasksSuccess(tasks, action.payload.deskId));
+    const tasks = yield call(api.fetchTasks, token);
+    tasks.sort((a: Task, b: Task) => a.id - b.id);
+    yield put(
+      actions.fetchTasksSuccess({tasks, deskId: action.payload.deskId}),
+    );
     yield call(navigate, 'Desk');
   } catch (error) {
-    yield put(fetchTasksFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* addNewTaskFlow(action: any) {
+function* addNewTaskFlow(action: ReturnType<typeof actions.addNewTask>) {
   const token = yield select(selectToken);
 
   try {
     const response = yield call(
-      addNewTask,
+      api.addNewTask,
       token,
       action.payload.title,
       action.payload.deskId,
     );
-    yield put(
-      addNewTaskSuccess(response.title, response.id, action.payload.deskId),
-    );
+
+    const {title, id, deskId} = response;
+
+    yield put(actions.addNewTaskSuccess({title, id, columnId: deskId}));
   } catch (error) {
-    yield put(addNewTaskFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* updateTaskCheckedFlow(action: any) {
+function* updateTaskCheckedFlow(
+  action: ReturnType<typeof actions.updateTaskChecked>,
+) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(updateTask, token, action.payload.id, {
+    const response = yield call(api.updateTask, token, action.payload.id, {
       checked: !action.payload.checked,
     });
 
-    yield put(updateTaskCheckedSuccess(response.id, response.checked));
+    const {id, checked} = response;
+
+    yield put(actions.updateTaskCheckedSuccess({id, checked}));
   } catch (error) {
-    yield put(updateTaskCheckedFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* updateTaskTitleFlow(action: any) {
+function* updateTaskTitleFlow(
+  action: ReturnType<typeof actions.updateTaskTitle>,
+) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(updateTask, token, action.payload.id, {
+    const response = yield call(api.updateTask, token, action.payload.id, {
       title: action.payload.title,
     });
 
-    yield put(updateTaskTitleSuccess(response.id, response.title));
+    const {id, title} = response;
+
+    yield put(actions.updateTaskTitleSuccess({id, title}));
   } catch (error) {
-    yield put(updateTaskTitleFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* updateTaskDescFlow(action: any) {
+function* updateTaskDescriptionFlow(
+  action: ReturnType<typeof actions.updateTaskDescription>,
+) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(updateTask, token, action.payload.id, {
+    const response = yield call(api.updateTask, token, action.payload.id, {
       description: action.payload.description,
     });
 
-    console.log(response);
+    const {id, description} = response;
 
-    yield put(updateTaskDescSuccess(response.id, response.description));
+    yield put(actions.updateTaskDescriptionSuccess({id, description}));
   } catch (error) {
-    yield put(updateTaskDescFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* deleteTaskFlow(action: any) {
+function* deleteTaskFlow(action: ReturnType<typeof actions.deleteTask>) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(deleteTask, token, action.payload.id);
+    const response = yield call(api.deleteTask, token, action.payload.id);
 
     if (response.statusText === 'OK') {
-      yield put(deleteTaskSuccess(action.payload.id));
+      yield put(actions.deleteTaskSuccess({id: action.payload.id}));
     }
   } catch (error) {
-    yield put(deleteTaskFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* updateDeskTitleFlow(action: any) {
+function* updateDeskTitleFlow(
+  action: ReturnType<typeof actions.updateDeskTitle>,
+) {
   const token = yield select(selectToken);
 
   try {
     const response = yield call(
-      updateDeskTitle,
+      api.updateDeskTitle,
       token,
       action.payload.id,
       action.payload.title,
     );
 
-    yield put(updateDeskTitleSuccess(response.id, response.title));
+    const {id, title} = response;
+
+    yield put(actions.updateDeskTitleSuccess({id, title}));
   } catch (error) {
-    yield put(updateDeskTitleFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* deleteDeskFlow(action: any) {
+function* deleteDeskFlow(action: ReturnType<typeof actions.deleteDesk>) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(deleteDesk, token, action.payload.id);
+    const response = yield call(api.deleteDesk, token, action.payload.id);
 
     if (response.statusText === 'OK') {
-      yield put(deleteDeskSuccess(action.payload.id));
+      yield put(actions.deleteDeskSuccess({id: action.payload.id}));
       yield call(navigate, 'Main');
     }
   } catch (error) {
-    yield put(deleteDeskFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
@@ -294,76 +247,84 @@ function* fetchCommentsFlow() {
   const user = yield select(selectUser);
 
   try {
-    const response = yield call(fetchComments, token);
-    const comment = response.data.map((item: any) => {
-      return {
-        author: user.name,
-        text: item.body,
-        id: item.id,
-        taskId: item.cardId,
-      };
-    });
-    yield put(fetchCommentsSuccess(comment));
+    const response = yield call(api.fetchComments, token);
+    const comments = response.data.map(
+      (item: {
+        id: number;
+        body: string;
+        created: string;
+        cardId: number;
+        userId: number;
+      }) => {
+        return {
+          author: user.name,
+          text: item.body,
+          id: item.id,
+          taskId: item.cardId,
+        };
+      },
+    );
+    yield put(actions.fetchCommentsSuccess({comments}));
   } catch (error) {
-    yield put(fetchCommentsFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* addCommentFlow(action: any) {
+function* addCommentFlow(action: ReturnType<typeof actions.addComment>) {
   const token = yield select(selectToken);
 
   try {
     const response = yield call(
-      AddComment,
+      api.addComment,
       token,
       action.payload.text,
       action.payload.id,
     );
 
     yield put(
-      addCommentSuccess(
-        response.data.user.name,
-        response.data.body,
-        response.data.id,
-        response.data.cardId,
-      ),
+      actions.addCommentSuccess({
+        author: response.data.user.name,
+        text: response.data.body,
+        id: response.data.id,
+        taskId: response.data.cardId,
+      }),
     );
   } catch (error) {
-    yield put(addCommentFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* updateCommentFlow(action: any) {
+function* updateCommentFlow(action: ReturnType<typeof actions.updateComment>) {
   const token = yield select(selectToken);
 
   try {
     const response = yield call(
-      updateComment,
+      api.updateComment,
       token,
       action.payload.text,
       action.payload.id,
     );
 
-    yield put(updateCommentSuccess(response.data.body));
+    yield put(actions.updateCommentSuccess({text: response.data.body}));
   } catch (error) {
-    yield put(updateCommentFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }
 
-function* deleteCommentFlow(action: any) {
+function* deleteCommentFlow(action: ReturnType<typeof actions.deleteComment>) {
   const token = yield select(selectToken);
 
   try {
-    const response = yield call(deleteComment, token, action.payload.id);
+    const response = yield call(api.deleteComment, token, action.payload.id);
 
     if (response.status === 200) {
-      yield put(deleteCommentSuccess());
+      yield put(actions.deleteCommentSuccess());
     }
   } catch (error) {
-    yield put(deleteCommentFailure(error.message));
+    yield put(actions.fetchFailure(error.message));
     yield call(navigate, 'Error');
   }
 }

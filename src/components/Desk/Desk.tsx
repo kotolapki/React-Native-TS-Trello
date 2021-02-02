@@ -16,7 +16,7 @@ import {
   selectIsLoading,
   selectTasks,
 } from '../../redux/selectors';
-import {addNewTaskRequest, setSettingsCategory} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 import Task from '../Task';
 import AddField from '../AddField';
 
@@ -40,13 +40,13 @@ function Desk() {
 
   function addNewTaskHandler() {
     if (taskInput.length > 0) {
-      dispatch(addNewTaskRequest(taskInput, currentDeskId));
+      dispatch(actions.addNewTask({title: taskInput, deskId: currentDeskId}));
       setTaskInput('');
     }
   }
 
   function navigateToSettings() {
-    dispatch(setSettingsCategory('desk'));
+    dispatch(actions.setSettingsCategory({category: 'desk'}));
     navigate('Settings');
   }
 

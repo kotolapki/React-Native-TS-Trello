@@ -21,7 +21,7 @@ const saga = createSagaMiddleware();
 const middleware = [saga, thunk];
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: rootReducer.reducer,
   middleware,
 });
 

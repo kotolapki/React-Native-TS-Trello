@@ -1,61 +1,5 @@
-import {Task} from './../../types';
-import {State} from '../../types';
-import {
-  SIGN_IN,
-  SIGN_UP,
-  SIGN_UP_FAILURE,
-  SIGN_UP_REQUEST,
-  SIGN_UP_SUCCESS,
-  SIGN_IN_REQUEST,
-  SIGN_IN_SUCCESS,
-  SIGN_IN_FAILURE,
-  ADD_NEW_DESK_REQUEST,
-  ADD_NEW_DESK_SUCCESS,
-  ADD_NEW_DESK_FAILURE,
-  FETCH_DESKS,
-  FETCH_DESKS_REQUEST,
-  FETCH_DESKS_SUCCESS,
-  FETCH_DESKS_FAILURE,
-  FETCH_TASKS_REQUEST,
-  FETCH_TASKS_SUCCESS,
-  FETCH_TASKS_FAILURE,
-  ADD_NEW_TASK_REQUEST,
-  ADD_NEW_TASK_SUCCESS,
-  ADD_NEW_TASK_FAILURE,
-  UPDATE_TASK_CHECKED_SUCCESS,
-  UPDATE_TASK_CHECKED_REQUEST,
-  UPDATE_TASK_CHECKED_FAILURE,
-  DELETE_TASK_REQUEST,
-  DELETE_TASK_SUCCESS,
-  UPDATE_DESK_TITLE_REQUEST,
-  UPDATE_DESK_TITLE_SUCCESS,
-  DELETE_TASK_FAILURE,
-  UPDATE_DESK_TITLE_FAILURE,
-  DELETE_DESK_REQUEST,
-  DELETE_DESK_SUCCESS,
-  DELETE_DESK_FAILURE,
-  SET_CURRENT_TASK,
-  SET_SETTINGS_CATEGORY,
-  UPDATE_TASK_TITLE_REQUEST,
-  UPDATE_TASK_TITLE_SUCCESS,
-  UPDATE_TASK_TITLE_FAILURE,
-  UPDATE_TASK_DESC_REQUEST,
-  UPDATE_TASK_DESC_SUCCESS,
-  UPDATE_TASK_DESC_FAILURE,
-  FETCH_COMMENTS_REQUEST,
-  FETCH_COMMENTS_SUCCESS,
-  FETCH_COMMENTS_FAILURE,
-  ADD_COMMENT_REQUEST,
-  ADD_COMMENT_SUCCESS,
-  ADD_COMMENT_FAILURE,
-  SET_CURRENT_COMMENT,
-  UPDATE_COMMENT_REQUEST,
-  UPDATE_COMMENT_SUCCESS,
-  UPDATE_COMMENT_FAILURE,
-  DELETE_COMMENT_REQUEST,
-  DELETE_COMMENT_SUCCESS,
-  DELETE_COMMENT_FAILURE,
-} from './types';
+import {createSlice, PayloadAction, CaseReducer} from '@reduxjs/toolkit';
+import {Task, Comment, State, Desk} from './../../types';
 
 const initialState: State = {
   user: {
@@ -73,15 +17,163 @@ const initialState: State = {
   comments: [],
 };
 
-export const rootReducer = (state = initialState, action: any): State => {
-  switch (action.type) {
-    case SIGN_IN:
-      return {...state};
-    case SIGN_UP:
-      return {...state};
-    case SIGN_UP_REQUEST:
-      return {...state, isLoading: true};
-    case SIGN_UP_SUCCESS:
+const signIn: CaseReducer<
+  State,
+  PayloadAction<{email: string; password: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const signUp: CaseReducer<
+  State,
+  PayloadAction<{email: string; username: string; password: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const addNewDesk: CaseReducer<State, PayloadAction<{title: string}>> = (
+  state,
+) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const fetchTasks: CaseReducer<State, PayloadAction<{deskId: number}>> = (
+  state,
+) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const addNewTask: CaseReducer<
+  State,
+  PayloadAction<{title: string; deskId: number}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const updateTaskChecked: CaseReducer<
+  State,
+  PayloadAction<{id: number; checked: boolean}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const updateTaskTitle: CaseReducer<
+  State,
+  PayloadAction<{id: number; title: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const deleteTask: CaseReducer<State, PayloadAction<{id: number}>> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const updateTaskDescription: CaseReducer<
+  State,
+  PayloadAction<{id: number; description: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const updateDeskTitle: CaseReducer<
+  State,
+  PayloadAction<{id: number; title: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const deleteDesk: CaseReducer<State, PayloadAction<{id: number}>> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const addComment: CaseReducer<
+  State,
+  PayloadAction<{text: string; id: number}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const updateComment: CaseReducer<
+  State,
+  PayloadAction<{id: number; text: string}>
+> = (state) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+const deleteComment: CaseReducer<State, PayloadAction<{id: number}>> = (
+  state,
+) => {
+  return {
+    ...state,
+    isLoading: true,
+  };
+};
+
+export const rootReducer = createSlice({
+  name: 'rootReducer',
+  initialState,
+  reducers: {
+    signIn,
+    signInSuccess: (
+      state: State,
+      action: PayloadAction<{name: string; token: string}>,
+    ) => {
+      return {
+        ...state,
+        isLoading: false,
+        user: {name: action.payload.name, token: action.payload.token},
+      };
+    },
+    fetchFailure: (
+      state: State,
+      action: PayloadAction<{errorMessage: string}>,
+    ) => {
+      return {...state, isLoading: false, error: action.payload.errorMessage};
+    },
+    signUp,
+    signUpSuccess: (
+      state: State,
+      action: PayloadAction<{name: string; token: string}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -90,60 +182,65 @@ export const rootReducer = (state = initialState, action: any): State => {
           token: action.payload.token,
         },
       };
-    case SIGN_UP_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case SIGN_IN_REQUEST:
-      return {...state, isLoading: true};
-    case SIGN_IN_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        user: {name: action.payload.name, token: action.payload.token},
-      };
-    case SIGN_IN_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case ADD_NEW_DESK_REQUEST:
-      return {...state, isLoading: true};
-    case ADD_NEW_DESK_SUCCESS:
+    },
+    addNewDesk,
+    addNewDeskSuccess: (
+      state: State,
+      action: PayloadAction<{title: string; id: number}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
         desks: [...state.desks, action.payload],
       };
-    case ADD_NEW_DESK_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case FETCH_DESKS:
-      return {...state};
-    case FETCH_DESKS_REQUEST:
+    },
+    fetchDesks: (state: State) => {
       return {...state, isLoading: true};
-    case FETCH_DESKS_SUCCESS:
+    },
+    fetchDesksSuccess: (
+      state: State,
+      action: PayloadAction<{desks: Desk[]}>,
+    ) => {
       return {...state, isLoading: false, desks: action.payload.desks};
-    case FETCH_DESKS_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case FETCH_TASKS_REQUEST:
-      return {...state, isLoading: true};
-    case FETCH_TASKS_SUCCESS:
+    },
+    fetchTasks,
+    fetchTasksSuccess: (
+      state: State,
+      action: PayloadAction<{tasks: Task[]; deskId: number}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
         tasks: action.payload.tasks,
         currentDeskId: action.payload.deskId,
       };
-    case FETCH_TASKS_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case ADD_NEW_TASK_REQUEST:
-      return {...state, isLoading: true};
-    case ADD_NEW_TASK_SUCCESS:
+    },
+    addNewTask,
+    addNewTaskSuccess: (
+      state: State,
+      action: PayloadAction<{title: string; id: number; columnId: number}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
-        tasks: [...state.tasks, action.payload],
+        tasks: [
+          ...state.tasks,
+          {
+            title: action.payload.title,
+            description: '',
+            id: action.payload.id,
+            columnId: action.payload.columnId,
+            checked: false,
+            commentsIds: [],
+          },
+        ],
       };
-    case ADD_NEW_TASK_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case UPDATE_TASK_CHECKED_REQUEST:
-      return {...state, isLoading: true};
-    case UPDATE_TASK_CHECKED_SUCCESS:
+    },
+    updateTaskChecked,
+    updateTaskCheckedSuccess: (
+      state: State,
+      action: PayloadAction<{id: number; checked: boolean}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -155,11 +252,12 @@ export const rootReducer = (state = initialState, action: any): State => {
           return task;
         }),
       };
-    case UPDATE_TASK_CHECKED_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case UPDATE_TASK_TITLE_REQUEST:
-      return {...state, isLoading: true};
-    case UPDATE_TASK_TITLE_SUCCESS:
+    },
+    updateTaskTitle,
+    updateTaskTitleSuccess: (
+      state: State,
+      action: PayloadAction<{id: number; title: string}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -171,11 +269,12 @@ export const rootReducer = (state = initialState, action: any): State => {
           return task;
         }),
       };
-    case UPDATE_TASK_TITLE_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case UPDATE_TASK_DESC_REQUEST:
-      return {...state, isLoading: true};
-    case UPDATE_TASK_DESC_SUCCESS:
+    },
+    updateTaskDescription,
+    updateTaskDescriptionSuccess: (
+      state: State,
+      action: PayloadAction<{id: number; description: string}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -187,21 +286,20 @@ export const rootReducer = (state = initialState, action: any): State => {
           return task;
         }),
       };
-    case UPDATE_TASK_DESC_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case DELETE_TASK_REQUEST:
-      return {...state, isLoading: true};
-    case DELETE_TASK_SUCCESS:
+    },
+    deleteTask,
+    deleteTaskSuccess: (state: State, action: PayloadAction<{id: number}>) => {
       return {
         ...state,
         isLoading: false,
         tasks: state.tasks.filter((task) => task.id !== action.payload.id),
       };
-    case DELETE_TASK_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorMessage};
-    case UPDATE_DESK_TITLE_REQUEST:
-      return {...state, isLoading: true};
-    case UPDATE_DESK_TITLE_SUCCESS:
+    },
+    updateDeskTitle,
+    updateDeskTitleSuccess: (
+      state: State,
+      action: PayloadAction<{id: number; title: string}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -216,43 +314,55 @@ export const rootReducer = (state = initialState, action: any): State => {
           }
         }),
       };
-    case UPDATE_DESK_TITLE_FAILURE:
-      return {...state, isLoading: false, error: action.payload.error};
-    case DELETE_DESK_REQUEST:
-      return {...state, isLoading: true};
-    case DELETE_DESK_SUCCESS:
+    },
+    deleteDesk,
+    deleteDeskSuccess: (state: State, action: PayloadAction<{id: number}>) => {
       return {
         ...state,
         isLoading: false,
         desks: state.desks.filter((desk) => desk.id !== action.payload.id),
       };
-    case DELETE_DESK_FAILURE:
-      return {...state, isLoading: false, error: action.payload.error};
-    case SET_CURRENT_TASK:
+    },
+    fetchComments: (state: State) => {
+      return {...state, isLoading: true};
+    },
+    fetchCommentsSuccess: (
+      state: State,
+      action: PayloadAction<{comments: Comment[]}>,
+    ) => {
+      return {
+        ...state,
+        isLoading: false,
+        comments: action.payload.comments.filter(
+          (comment: Comment) => comment.taskId === state.currentTaskId,
+        ),
+      };
+    },
+    setCurrentTask: (state: State, action: PayloadAction<{id: number}>) => {
       return {...state, currentTaskId: action.payload.id};
-    case SET_SETTINGS_CATEGORY:
+    },
+    setCurrentComment: (state: State, action: PayloadAction<{id: number}>) => {
+      return {...state, currentCommentId: action.payload.id};
+    },
+    setSettingsCategory: (
+      state: State,
+      action: PayloadAction<{category: string}>,
+    ) => {
       return {...state, settingsCategory: action.payload.category};
-    case FETCH_COMMENTS_REQUEST:
-      return {...state, isLoading: true};
-    case FETCH_COMMENTS_SUCCESS:
-      return {...state, isLoading: false, comments: action.payload.comments};
-    case FETCH_COMMENTS_FAILURE:
-      return {...state, isLoading: false, error: action.payload.error};
-    case ADD_COMMENT_REQUEST:
-      return {...state, isLoading: true};
-    case ADD_COMMENT_SUCCESS:
+    },
+    addComment,
+    addCommentSuccess: (state: State, action: PayloadAction<Comment>) => {
       return {
         ...state,
         isLoading: false,
         comments: [...state.comments, action.payload],
       };
-    case ADD_COMMENT_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorText};
-    case SET_CURRENT_COMMENT:
-      return {...state, currentCommentId: action.payload.id};
-    case UPDATE_COMMENT_REQUEST:
-      return {...state, isLoading: true};
-    case UPDATE_COMMENT_SUCCESS:
+    },
+    updateComment,
+    updateCommentSuccess: (
+      state: State,
+      action: PayloadAction<{text: string}>,
+    ) => {
       return {
         ...state,
         isLoading: false,
@@ -264,11 +374,9 @@ export const rootReducer = (state = initialState, action: any): State => {
           return comment;
         }),
       };
-    case UPDATE_COMMENT_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorText};
-    case DELETE_COMMENT_REQUEST:
-      return {...state, isLoading: true};
-    case DELETE_COMMENT_SUCCESS:
+    },
+    deleteComment,
+    deleteCommentSuccess: (state: State) => {
       return {
         ...state,
         isLoading: false,
@@ -276,9 +384,10 @@ export const rootReducer = (state = initialState, action: any): State => {
           (comment) => comment.id !== state.currentCommentId,
         ),
       };
-    case DELETE_COMMENT_FAILURE:
-      return {...state, isLoading: false, error: action.payload.errorText};
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
+
+export const actions = {...rootReducer.actions};
+
+export default rootReducer.reducer;

@@ -9,11 +9,7 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  addNewDesk,
-  fetchDesksRequest,
-  fetchTasksRequest,
-} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 import {selectDesks, selectIsLoading} from '../../redux/selectors';
 import AddField from '../AddField';
 
@@ -24,14 +20,14 @@ function Main() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchDesksRequest());
+    dispatch(actions.fetchDesks());
   }, [dispatch]);
 
   const desks = useSelector(selectDesks);
 
   function addNewDeskHandler() {
     setIsDeskTitleInputVisible(false);
-    dispatch(addNewDesk(titleInput));
+    dispatch(actions.addNewDesk({title: titleInput}));
     setTitleInput('');
   }
 
@@ -68,7 +64,7 @@ function Main() {
             <TouchableOpacity
               key={index}
               style={styles.desk}
-              onPress={() => dispatch(fetchTasksRequest(desk.id))}>
+              onPress={() => dispatch(actions.fetchTasks({deskId: desk.id}))}>
               <Text style={styles.deskTitle}>{desk.title}</Text>
             </TouchableOpacity>
           );

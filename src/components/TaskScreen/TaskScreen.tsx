@@ -15,12 +15,7 @@ import {
   selectCurrentTaskByTaskId,
   selectCurrentTaskId,
 } from '../../redux/selectors';
-import {
-  addCommentRequest,
-  fetchCommentsRequest,
-  setCurrentComment,
-  setSettingsCategory,
-} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 
 function TaskScreen() {
   const [inputValue, setInputValue] = useState('');
@@ -30,24 +25,24 @@ function TaskScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCommentsRequest());
+    dispatch(actions.fetchComments());
   }, [dispatch]);
 
   const comments = useSelector(selectCommentsByCurrentTaskId);
 
   function navigateToSettings() {
-    dispatch(setSettingsCategory('task'));
+    dispatch(actions.setSettingsCategory({category: 'task'}));
     navigate('Settings');
   }
 
   function handleAddComment() {
-    dispatch(addCommentRequest(inputValue, currentTaskId));
+    dispatch(actions.addComment({text: inputValue, id: currentTaskId}));
     setInputValue('');
   }
 
   function handleCommentPress(id: number) {
-    dispatch(setCurrentComment(id));
-    dispatch(setSettingsCategory('comment'));
+    dispatch(actions.setCurrentComment({id}));
+    dispatch(actions.setSettingsCategory({category: 'comment'}));
     navigate('Settings');
   }
 
@@ -107,9 +102,6 @@ function TaskScreen() {
           />
         </TouchableOpacity>
       </View>
-      {/* {isCommentPopupVisible && (
-        <CommentPopup handleChangePopupVisibility={setIsCommentPopupVisible} />
-      )} */}
     </View>
   );
 }

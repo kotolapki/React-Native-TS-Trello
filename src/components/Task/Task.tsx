@@ -11,11 +11,7 @@ import {SwipeRow} from 'react-native-swipe-list-view';
 import {navigate} from '../../services/NavigationService';
 import {useDispatch} from 'react-redux';
 import {Task as TaskType} from '../../../types';
-import {
-  deleteTaskRequest,
-  setCurrentTask,
-  updateTaskCheckedRequest,
-} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 
 interface TaskProps {
   task: TaskType;
@@ -26,11 +22,11 @@ function Task({task}: TaskProps) {
 
   function onCheckboxPress(e: GestureResponderEvent) {
     e.stopPropagation();
-    dispatch(updateTaskCheckedRequest(task.id, task.checked));
+    dispatch(actions.updateTaskChecked({id: task.id, checked: task.checked}));
   }
 
   function onTaskPress() {
-    dispatch(setCurrentTask(task.id));
+    dispatch(actions.setCurrentTask({id: task.id}));
     navigate('TaskScreen');
   }
 
@@ -38,7 +34,7 @@ function Task({task}: TaskProps) {
     <SwipeRow rightOpenValue={-70} stopRightSwipe={-70} disableRightSwipe>
       <TouchableOpacity
         style={styles.hiddenItem}
-        onPress={() => dispatch(deleteTaskRequest(task.id))}>
+        onPress={() => dispatch(actions.deleteTask({id: task.id}))}>
         <Text style={styles.hiddenText}>Delete</Text>
       </TouchableOpacity>
 

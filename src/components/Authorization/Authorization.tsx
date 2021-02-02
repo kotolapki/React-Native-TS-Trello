@@ -8,11 +8,10 @@ import {
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
-import {signIn, signUp} from '../../redux/actions';
+import {actions} from '../../redux/rootReducer';
 import {selectIsLoading} from '../../redux/selectors';
 import {navigate} from '../../services/NavigationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {signInSuccess} from '../../redux/actions';
 
 function Authorization() {
   const [email, setEmail] = useState('');
@@ -28,7 +27,7 @@ function Authorization() {
       const name = await AsyncStorage.getItem('name');
 
       if (token && name) {
-        dispatch(signInSuccess(name, token));
+        dispatch(actions.signInSuccess({name, token}));
         navigate('Main');
       }
     }
@@ -36,10 +35,10 @@ function Authorization() {
     fetchToken();
   }, [dispatch]);
 
-  function onSubmit() {
+  function OnPressHandler() {
     hasUserRegistered
-      ? dispatch(signIn(email, password))
-      : dispatch(signUp(email, username, password));
+      ? dispatch(actions.signIn({email, password}))
+      : dispatch(actions.signUp({email, username, password}));
   }
 
   return (
@@ -73,7 +72,7 @@ function Authorization() {
         secureTextEntry={true}
         onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity style={styles.submitBtn} onPress={onSubmit}>
+      <TouchableOpacity style={styles.submitBtn} onPress={OnPressHandler}>
         <Text style={styles.submitBtnText}>Confirm</Text>
       </TouchableOpacity>
       <TouchableOpacity
