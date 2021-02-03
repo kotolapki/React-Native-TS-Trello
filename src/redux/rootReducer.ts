@@ -183,6 +183,12 @@ export const rootReducer = createSlice({
         },
       };
     },
+    signOut: (state: State) => {
+      return {...state};
+    },
+    signOutSuccess: (state: State) => {
+      return {...state, user: {name: '', token: ''}};
+    },
     addNewDesk,
     addNewDeskSuccess: (
       state: State,
