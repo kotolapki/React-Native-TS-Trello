@@ -46,8 +46,7 @@ function Desk() {
   }
 
   function navigateToSettings() {
-    dispatch(actions.setSettingsCategory({category: 'desk'}));
-    navigate('Settings');
+    navigate('DeskSettings');
   }
 
   return (

@@ -36,7 +36,7 @@ function Main() {
       onTouchStart={() => setIsDeskTitleInputVisible(false)}
       style={styles.root}>
       <View>
-        <Text style={styles.title}>My Desk</Text>
+        <Text style={styles.title}>Task manager</Text>
         {!isDeskTitleInputVisible && (
           <View style={styles.addNewDeskBtnWrapper}>
             <TouchableOpacity

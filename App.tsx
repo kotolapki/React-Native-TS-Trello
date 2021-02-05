@@ -12,7 +12,9 @@ import {sagaWatcher} from './src/redux/sagas';
 import Error from './src/components/Error';
 import {navigationRef} from './src/services/NavigationService';
 import Desk from './src/components/Desk';
-import Settings from './src/components/Settings';
+import DeskSettings from './src/components/DeskSettings';
+import TaskSettings from './src/components/TaskSettings';
+import CommentSettings from './src/components/CommentSettings';
 import TaskScreen from './src/components/TaskScreen';
 
 const Stack = createStackNavigator();
@@ -49,13 +51,23 @@ const App = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="Settings"
-            component={Settings}
+            name="TaskScreen"
+            component={TaskScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="TaskScreen"
-            component={TaskScreen}
+            name="DeskSettings"
+            component={DeskSettings}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="TaskSettings"
+            component={TaskSettings}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CommentSettings"
+            component={CommentSettings}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

@@ -21,19 +21,12 @@ function TaskScreen() {
   const [inputValue, setInputValue] = useState('');
   const currentTaskId = useSelector(selectCurrentTaskId);
   const task = useSelector(selectCurrentTaskByTaskId)!;
-
+  const comments = useSelector(selectCommentsByCurrentTaskId);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(actions.fetchComments());
   }, [dispatch]);
-
-  const comments = useSelector(selectCommentsByCurrentTaskId);
-
-  function navigateToSettings() {
-    dispatch(actions.setSettingsCategory({category: 'task'}));
-    navigate('Settings');
-  }
 
   function handleAddComment() {
     dispatch(actions.addComment({text: inputValue, id: currentTaskId}));
@@ -42,8 +35,7 @@ function TaskScreen() {
 
   function handleCommentPress(id: number) {
     dispatch(actions.setCurrentComment({id}));
-    dispatch(actions.setSettingsCategory({category: 'comment'}));
-    navigate('Settings');
+    navigate('CommentSettings');
   }
 
   return (
@@ -52,7 +44,7 @@ function TaskScreen() {
         <Text style={styles.title}>{task.title}</Text>
         <TouchableOpacity
           style={styles.settingsBtn}
-          onPress={navigateToSettings}>
+          onPress={() => navigate('TaskSettings')}>
           <ImageBackground
             style={styles.settingsIcon}
             source={require('../../assets/img/settings.png')}

@@ -10,7 +10,6 @@ const initialState: State = {
   currentDeskId: 0,
   currentTaskId: 0,
   currentCommentId: 0,
-  settingsCategory: '',
   error: '',
   desks: [],
   tasks: [],
@@ -349,12 +348,6 @@ export const rootReducer = createSlice({
     },
     setCurrentComment: (state: State, action: PayloadAction<{id: number}>) => {
       return {...state, currentCommentId: action.payload.id};
-    },
-    setSettingsCategory: (
-      state: State,
-      action: PayloadAction<{category: string}>,
-    ) => {
-      return {...state, settingsCategory: action.payload.category};
     },
     addComment,
     addCommentSuccess: (state: State, action: PayloadAction<Comment>) => {

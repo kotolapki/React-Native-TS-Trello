@@ -72,16 +72,18 @@ function Authorization() {
         secureTextEntry={true}
         onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity style={styles.submitBtn} onPress={OnPressHandler}>
-        <Text style={styles.submitBtnText}>Confirm</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.submitBtn}
-        onPress={() => setHasUserRegistered((prev) => !prev)}>
-        <Text style={styles.submitBtnText}>
-          {hasUserRegistered ? 'Sign up' : 'Sing in'}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.submitBtnsWrapper}>
+        <TouchableOpacity style={styles.submitBtn} onPress={OnPressHandler}>
+          <Text style={styles.submitBtnText}>Confirm</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.changeHasUserRegisteredBtn}
+          onPress={() => setHasUserRegistered((prev) => !prev)}>
+          <Text style={styles.submitBtnText}>
+            {hasUserRegistered ? 'Sign up' : 'Sing in'}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <Spinner visible={isLoading} textContent={'Loading...'} />
     </View>
   );
@@ -112,15 +114,33 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black',
     borderBottomWidth: 2,
   },
+  submitBtnsWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   submitBtn: {
-    marginTop: 5,
+    marginRight: 10,
+    paddingVertical: 10,
+    minWidth: 130,
+    textAlign: 'center',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'transparent',
+  },
+  changeHasUserRegisteredBtn: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+    minWidth: 130,
     borderRadius: 10,
-    backgroundColor: 'black',
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'transparent',
   },
   submitBtnText: {
-    color: 'white',
+    textAlign: 'center',
+    color: 'black',
     fontSize: 22,
     textTransform: 'uppercase',
   },

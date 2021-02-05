@@ -55,10 +55,6 @@ export function selectCommentsByCurrentTaskId(state: State) {
   );
 }
 
-export function selectSettingsCategory(state: State) {
-  return state.settingsCategory;
-}
-
 export function selectCommentByCurrentCommentId(state: State) {
   return state.comments.find(
     (comment) => comment.id === state.currentCommentId,

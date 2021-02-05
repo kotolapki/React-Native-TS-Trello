@@ -29,7 +29,6 @@ export interface State {
   currentDeskId: number;
   currentTaskId: number;
   currentCommentId: number;
-  settingsCategory: string;
   desks: Desk[];
   tasks: Task[];
   comments: Comment[];
